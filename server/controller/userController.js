@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 JWTKEY = process.env.JWTKEY
 
 exports.registerUser = async (req, res) => {
-    console.log('register route');
+    console.log('register route',req,res);
     try {
         const user = new User(req.body);
         await user.save();

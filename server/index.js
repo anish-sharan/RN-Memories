@@ -14,12 +14,17 @@ const mongoURL = process.env.DB;
 
 const Schema = mongoose.Schema;
 
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*"); res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 mongoose.connect(mongoURL, { useNewUrlParser: true })
     .then(() => console.log('Database connected successfully'))
     .catch((err) => console.log(err))
 
 app.get('/', auth, (req, res) => {
-    res.status(200).json({success: true, message: `your email ${req.user.email}`});
+    res.status(200).json({ success: true, message: `your email ${req.user.email}` });
 })
 app.use(bodyParser.json());
 app.use('/api', routes);
