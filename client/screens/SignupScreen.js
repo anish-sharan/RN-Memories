@@ -1,58 +1,73 @@
-import React, { useState } from 'react'
-import { View, Keyboard, StyleSheet, Text } from 'react-native';
+import React, { useState, useCallback, useContext } from 'react'
+import { View, Keyboard, StyleSheet, Alert } from 'react-native';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 import CustomHeading from '../components/CustomHeading';
+import { ApiContext } from '../context/ApiContext';
+import { UserContext } from '../context/UserContext';
 
 export default function SignupScreen({ navigation }) {
+    const { signUp } = useContext(ApiContext);
+    const { userContex } = useContext(UserContext);
+    console.log('userContext',userContext);
+
     const [userData, setUserData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        secondPassword: ''
+        name: 'anish sharan100',
+        email: 'anish100@mail.com',
+        password: '123456',
+        secondPassword: '123456'
     });
+
     const [error, setError] = useState({
         name: '',
         email: '',
         password: '',
         secondPassword: ''
     })
+
     const handleChange = (name, value) => {
         setUserData((prevState) => ({ ...prevState, [name]: value }));
     }
     const errorHandler = (name, error) => {
         setError((prevState) => ({ ...prevState, [name]: error }));
     }
-    const loginHandler = () => {
+    const loginHandler = useCallback(async () => {
         Keyboard.dismiss();
-        // let validUser = true;
-        // if (!userData.name) {
-        //     errorHandler('name', 'Name required');
-        //     validUser = false;
-        // }
-        // if (!userData.email) {
-        //     errorHandler('email', 'Email required');
-        //     validUser = false;
-        // }
-        // if (!userData.password) {
-        //     errorHandler('password', 'Password required');
-        //     validUser = false;
-        // }
-        // if (!userData.secondPassword) {
-        //     errorHandler('password', 'Password required');
-        //     validUser = false;
-        // }
-        // if (userData.password !== userData.secondPassword) {
-        //     errorHandler('secondPassword', 'Password did not matched');
-        //     validUser = false;
-        // }
+        let validUser = true;
+        if (!userData.name) {
+            errorHandler('name', 'Name required');
+            validUser = false;
+        }
+        if (!userData.email) {
+            errorHandler('email', 'Email required');
+            validUser = false;
+        }
+        if (!userData.password) {
+            errorHandler('password', 'Password required');
+            validUser = false;
+        }
+        if (!userData.secondPassword) {
+            errorHandler('password', 'Password required');
+            validUser = false;
+        }
+        if (userData.password !== userData.secondPassword) {
+            errorHandler('secondPassword', 'Password did not matched');
+            validUser = false;
+        }
 
-        // if (validUser) {
-        //     console.log('userData : ', userData);
-        //     navigation.navigate('SignupScreen');
-        // }
-        navigation.navigate('HomeScreen');
-    }
+        if (validUser) {
+            let data = {
+                firstName: userData.name,
+                email: userData.email,
+                password: userData.password
+            }
+            const response = await signUp(data);
+            if (!response.success) {
+                Alert.alert('Something went wrong ', response.errorMsg);
+            }
+            console.log('&*',response)
+        }
+    })
     return (
         <View style={styles.container}>
             <CustomHeading title={'Sign up'} />
