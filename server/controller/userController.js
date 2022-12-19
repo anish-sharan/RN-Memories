@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 JWTKEY = process.env.JWTKEY
 
 exports.registerUser = async (req, res) => {
-    console.log('register route',req,res);
     try {
         const user = new User(req.body);
         await user.save();
@@ -20,13 +19,13 @@ exports.signInUser = async (req, res) => {
     User.findOne({ email: req.body.email }, (err, user) => {
         if (!user)
             return res.json({
-                loginSuccess: false,
+                success: false,
                 message: "Auth failed, email not found"
             });
 
         user.comparePassword(req.body.password, (err, isMatch) => {
             if (!isMatch)
-                return res.json({ loginSuccess: false, message: "Wrong password" });
+                return res.json({ success: false, message: "Wrong password" });
             const token = jwt.sign({ userId: user._id }, JWTKEY);
             res.send({ token });
         });

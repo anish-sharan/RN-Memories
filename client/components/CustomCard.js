@@ -9,9 +9,6 @@ const CustomCard = ({ style }) => {
         <View style={[styles.container, style]}>
             <View style={styles.cardBackground}>
                 <Button icon='camera' style={styles.icon}/>
-                <Text style={styles.heading}>hekllo</Text>
-                <Text style={styles.description}>description</Text>
-                <Text style={styles.date}>description</Text>
             <Image source={require('../assets/favicon.png')} style={styles.image} />
             </View>
         </View>

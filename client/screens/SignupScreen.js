@@ -1,19 +1,16 @@
 import React, { useState, useCallback, useContext } from 'react'
-import { View, Keyboard, StyleSheet, Alert } from 'react-native';
+import { View, Keyboard, StyleSheet, Alert, Text } from 'react-native';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 import CustomHeading from '../components/CustomHeading';
 import { ApiContext } from '../context/ApiContext';
-import { UserContext } from '../context/UserContext';
 
 export default function SignupScreen({ navigation }) {
     const { signUp } = useContext(ApiContext);
-    const { userContex } = useContext(UserContext);
-    console.log('userContext',userContext);
 
     const [userData, setUserData] = useState({
-        name: 'anish sharan100',
-        email: 'anish100@mail.com',
+        name: 'anish sharan',
+        email: 'anish@mail.com',
         password: '123456',
         secondPassword: '123456'
     });
@@ -62,10 +59,10 @@ export default function SignupScreen({ navigation }) {
                 password: userData.password
             }
             const response = await signUp(data);
-            if (!response.success) {
-                Alert.alert('Something went wrong ', response.errorMsg);
+            if (!response.response.success) {
+                Alert.alert('Something went wrong ', response.message);
             }
-            console.log('&*',response)
+
         }
     })
     return (
@@ -101,6 +98,12 @@ export default function SignupScreen({ navigation }) {
                 errorMessage={error.secondPassword}
             />
             <CustomButton title={'press me'} onPress={loginHandler} />
+            <Text>already have an account?
+            <Text style={{ color: 'blue' }}
+                    onPress={() => navigation.navigate('LoginScreen')}>
+                    {' '}Log In
+            </Text>
+            </Text>
         </View>
     )
 }

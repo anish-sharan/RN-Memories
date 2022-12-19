@@ -6,7 +6,7 @@ export const ApiContext = createContext();
 
 const ApiContextProvider = ({ children }) => {
     const { setUserContext } = useContext(UserContext);
-    const url = 'https://9cf7-61-0-187-38.ngrok.io'
+    const url = 'http://a8d5-59-95-86-45.ngrok.io'
 
     const get = useCallback(
         async (endpoint) => {
@@ -36,19 +36,33 @@ const ApiContextProvider = ({ children }) => {
     );
 
     // POST
+
+    // SIGNING USER 
     const signUp = useCallback(
         async data => {
-            console.log('api ', data);
             const response = await post('api/signup', data);
             if (response.success) {
-                setUserContext({ token: response.token })
+                setUserContext({ token: response.response.token })
             }
+            return response;
+        },
+        [post]
+    );
+
+    // LOGIN USER
+    const signIn = useCallback(
+        async data => {
+            const response = await post('api/signin', data);
+            if (response.success) {
+                setUserContext({ token: response.response.token })
+            }
+            return response;
         },
         [post]
     );
 
     return (
-        <ApiContext.Provider value={{ signUp }}>
+        <ApiContext.Provider value={{ signUp, signIn }}>
             {children}
         </ApiContext.Provider>
     )

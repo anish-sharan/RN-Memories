@@ -5,14 +5,14 @@ export const UserContext = createContext();
 function UserContextProvider({ children }) {
   const [userContext, setUserContext] = useState({});
   return (
-    <DataContext.Provider
+    <UserContext.Provider
       value={{
         userContext,
         setUserContext,
       }}
     >
       {children}
-    </DataContext.Provider>
+    </UserContext.Provider>
   );
 }
 
