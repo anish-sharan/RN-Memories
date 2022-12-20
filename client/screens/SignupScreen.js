@@ -1,58 +1,70 @@
-import React, { useState } from 'react'
-import { View, Keyboard, StyleSheet, Text } from 'react-native';
+import React, { useState, useCallback, useContext } from 'react'
+import { View, Keyboard, StyleSheet, Alert, Text } from 'react-native';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 import CustomHeading from '../components/CustomHeading';
+import { ApiContext } from '../context/ApiContext';
 
 export default function SignupScreen({ navigation }) {
+    const { signUp } = useContext(ApiContext);
+
     const [userData, setUserData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        secondPassword: ''
+        name: 'anish sharan',
+        email: 'anish@mail.com',
+        password: '123456',
+        secondPassword: '123456'
     });
+
     const [error, setError] = useState({
         name: '',
         email: '',
         password: '',
         secondPassword: ''
     })
+
     const handleChange = (name, value) => {
         setUserData((prevState) => ({ ...prevState, [name]: value }));
     }
     const errorHandler = (name, error) => {
         setError((prevState) => ({ ...prevState, [name]: error }));
     }
-    const loginHandler = () => {
+    const loginHandler = useCallback(async () => {
         Keyboard.dismiss();
-        // let validUser = true;
-        // if (!userData.name) {
-        //     errorHandler('name', 'Name required');
-        //     validUser = false;
-        // }
-        // if (!userData.email) {
-        //     errorHandler('email', 'Email required');
-        //     validUser = false;
-        // }
-        // if (!userData.password) {
-        //     errorHandler('password', 'Password required');
-        //     validUser = false;
-        // }
-        // if (!userData.secondPassword) {
-        //     errorHandler('password', 'Password required');
-        //     validUser = false;
-        // }
-        // if (userData.password !== userData.secondPassword) {
-        //     errorHandler('secondPassword', 'Password did not matched');
-        //     validUser = false;
-        // }
+        let validUser = true;
+        if (!userData.name) {
+            errorHandler('name', 'Name required');
+            validUser = false;
+        }
+        if (!userData.email) {
+            errorHandler('email', 'Email required');
+            validUser = false;
+        }
+        if (!userData.password) {
+            errorHandler('password', 'Password required');
+            validUser = false;
+        }
+        if (!userData.secondPassword) {
+            errorHandler('password', 'Password required');
+            validUser = false;
+        }
+        if (userData.password !== userData.secondPassword) {
+            errorHandler('secondPassword', 'Password did not matched');
+            validUser = false;
+        }
 
-        // if (validUser) {
-        //     console.log('userData : ', userData);
-        //     navigation.navigate('SignupScreen');
-        // }
-        navigation.navigate('HomeScreen');
-    }
+        if (validUser) {
+            let data = {
+                firstName: userData.name,
+                email: userData.email,
+                password: userData.password
+            }
+            const response = await signUp(data);
+            if (!response.response.success) {
+                Alert.alert('Something went wrong ', response.message);
+            }
+
+        }
+    })
     return (
         <View style={styles.container}>
             <CustomHeading title={'Sign up'} />
@@ -86,6 +98,12 @@ export default function SignupScreen({ navigation }) {
                 errorMessage={error.secondPassword}
             />
             <CustomButton title={'press me'} onPress={loginHandler} />
+            <Text>already have an account?
+            <Text style={{ color: 'blue' }}
+                    onPress={() => navigation.navigate('LoginScreen')}>
+                    {' '}Log In
+            </Text>
+            </Text>
         </View>
     )
 }

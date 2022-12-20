@@ -1,17 +1,15 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import UserStack from './navigation/UserStack';
-
-const Stack = createNativeStackNavigator();
+import ApiContextProvider from './context/ApiContext';
+import UserContext from './context/UserContext';
+import AppNavigator from './navigation/AppNavigator';
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="UserStack" component={UserStack} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <UserContext>
+      <ApiContextProvider>
+         <AppNavigator />
+      </ApiContextProvider>
+    </UserContext>
   );
 }
 

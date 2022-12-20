@@ -1,12 +1,15 @@
-import React, { useState, useRef } from 'react'
-import { View, Button, Keyboard, StyleSheet } from 'react-native';
+import React, { useState, useContext, useCallback } from 'react'
+import { View, Keyboard, StyleSheet, Text, Alert } from 'react-native';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
+import { ApiContext } from '../context/ApiContext';
 
 export default function LoginScreen({ navigation }) {
+    const { signIn } = useContext(ApiContext);
+
     const [userData, setUserData] = useState({
-        email: '',
-        password: ''
+        email: 'anish@mail.com',
+        password: '123456'
     });
     const [error, setError] = useState({
         email: '',
@@ -18,24 +21,28 @@ export default function LoginScreen({ navigation }) {
     const errorHandler = (name, error) => {
         setError((prevState) => ({ ...prevState, [name]: error }));
     }
-    const loginHandler = () => {
-        // Keyboard.dismiss();
-        // let validUser = true;
-        // if (!userData.email) {
-        //     errorHandler('email', 'Email required');
-        //     validUser = false;
-        // }
-        // if (!userData.password) {
-        //     errorHandler('password', 'Password required');
-        //     validUser = false;
-        // }
 
-        // if (validUser) {
-        //     console.log('userData : ', userData);
-        //     navigation.navigate('SignupScreen');
-        // }
-        navigation.navigate('SignupScreen');
-    }
+    const loginHandler = useCallback(async () => {
+        Keyboard.dismiss();
+        let validUser = true;
+        if (!userData.email) {
+            errorHandler('email', 'Email required');
+            validUser = false;
+        }
+        if (!userData.password) {
+            errorHandler('password', 'Password required');
+            validUser = false;
+        }
+
+        if (validUser) {
+            const response = await signIn(userData);
+            if (!response.response.success) {
+                Alert.alert('Something went wrong',response.response.message);
+            }
+        }
+    })
+
+
     return (
         <View style={styles.container}>
             <CustomInput
@@ -54,6 +61,12 @@ export default function LoginScreen({ navigation }) {
                 returnKeyType='go'
             />
             <CustomButton title={'Log in'} onPress={loginHandler} />
+            <Text>Don't have an account?
+            <Text style={{ color: 'blue' }}
+                    onPress={() => navigation.navigate('SignupScreen')}>
+                    {' '}Sign Up
+            </Text>
+            </Text>
         </View>
     )
 }
