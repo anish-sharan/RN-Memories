@@ -3,11 +3,12 @@ import { TextInput } from 'react-native-paper';
 import Colors from '../assets/Colors';
 import { StyleSheet } from 'react-native';
 
-const CustomInput = ({ ref, onSubmitEditing, placeholder, onChangeText, value, errorMessage, onFocus }) => {
+const CustomInput = ({ style, ref, onSubmitEditing, placeholder, onChangeText, value, errorMessage, onFocus, multiline = false }) => {
   return (
     <TextInput
-      style={styles.container}
+      style={[styles.container, style]}
       ref={ref}
+      multiline={multiline}
       onSubmitEditing={onSubmitEditing}
       label={errorMessage ? errorMessage : placeholder}
       value={value}

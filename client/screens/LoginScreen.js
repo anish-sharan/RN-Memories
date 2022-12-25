@@ -36,7 +36,7 @@ export default function LoginScreen({ navigation }) {
 
         if (validUser) {
             const response = await signIn(userData);
-            if (!response.response.success) {
+            if (!response.success) {
                 Alert.alert('Something went wrong',response.response.message);
             }
         }

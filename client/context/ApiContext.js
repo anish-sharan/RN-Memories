@@ -1,12 +1,13 @@
 import React, { useCallback, createContext, useContext } from 'react';
 import axios from 'axios';
-import {UserContext} from './UserContext';
+import { UserContext } from './UserContext';
+import config from '../config';
 
 export const ApiContext = createContext();
 
 const ApiContextProvider = ({ children }) => {
     const { setUserContext } = useContext(UserContext);
-    const url = 'http://a8d5-59-95-86-45.ngrok.io'
+    const url = config.BASE_URL;
 
     const get = useCallback(
         async (endpoint) => {
@@ -61,8 +62,17 @@ const ApiContextProvider = ({ children }) => {
         [post]
     );
 
+    // ADDING MEMORY
+    const addMemory = useCallback(
+        async data => {
+            const response = await post('api/memory', data);
+            return response;
+        },
+        [post]
+    );
+
     return (
-        <ApiContext.Provider value={{ signUp, signIn }}>
+        <ApiContext.Provider value={{ signUp, signIn, addMemory }}>
             {children}
         </ApiContext.Provider>
     )

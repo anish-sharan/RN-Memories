@@ -59,7 +59,7 @@ export default function SignupScreen({ navigation }) {
                 password: userData.password
             }
             const response = await signUp(data);
-            if (!response.response.success) {
+            if (!response.success) {
                 Alert.alert('Something went wrong ', response.message);
             }
 
