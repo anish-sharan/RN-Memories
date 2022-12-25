@@ -5,7 +5,7 @@ import CustomCard from '../../components/CustomCard';
 const HomeScreen = ({ style }) => {
     return (
         <View style={[styles.container, style]}>
-            <CustomCard />
+            {/* <CustomCard /> */}
         </View>
     )
 }

@@ -6,7 +6,7 @@ import UnknownUserStack from './UnkownUserStack';
 
 function AppNavigator() {
     const { userContext } = useContext(UserContext);
-   
+
     const getCorrectStack = () => {
         if (userContext.token) {
             return <UserStack />;
