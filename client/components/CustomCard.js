@@ -4,12 +4,14 @@ import FontSize from '../assets/FontSize.js';
 import Colors from '../assets/Colors.js';
 import { Button } from 'react-native-paper'
 
-const CustomCard = ({ style }) => {
+const CustomCard = ({ style, title, description }) => {
     return (
         <View style={[styles.container, style]}>
             <View style={styles.cardBackground}>
-                <Button icon='camera' style={styles.icon}/>
-            <Image source={require('../assets/favicon.png')} style={styles.image} />
+                <Text style={styles.heading}>{title}</Text>
+                <Text style={styles.description}>{description}</Text>
+                <Button icon='camera' style={styles.icon} />
+                <Image source={require('../assets/favicon.png')} style={styles.image} />
             </View>
         </View>
     )
