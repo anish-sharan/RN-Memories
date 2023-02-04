@@ -1,5 +1,5 @@
-import { BASE_URL } from '@env';
+import { URL } from '@env';
 
 export default {
-    BASE_URL
+    URL
 }
