@@ -9,12 +9,13 @@ export const ApiContext = createContext();
 
 const ApiContextProvider = ({ children }) => {
   const { setUserContext, userContext } = useContext(UserContext);
-  const { setMemoryContext, memoryContext } = useContext(MemoryContext);
+  const { setMemoryContext } = useContext(MemoryContext);
   //   const url = config.URL;
-  const url = "http://5ae7-59-95-85-211.ngrok.io";
+  const url = "http://1ead-59-95-86-160.ngrok.io";
   const token = userContext.token;
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
+  console.log(`JWT ${token}`);
   const get = useCallback(async (endpoint) => {
     return axios
       .get(`${url}/${endpoint}`)
@@ -83,7 +84,6 @@ const ApiContextProvider = ({ children }) => {
   // GET MEMORY
   const getMemory = useCallback(async () => {
     const memoryRes = await get("api/memory");
-    console.log(`memoryRes-${memoryRes.response}`);
     const { success, response } = memoryRes;
 
     if (success) {
@@ -93,8 +93,25 @@ const ApiContextProvider = ({ children }) => {
     }
   }, [get]);
 
+  // SEARCH MEMORY
+  const searchMemory = useCallback(
+    async (toSearch) => {
+      const searchMemoryRes = await get(`api/search?title=${toSearch}`);
+      console.log(`api/search/memory?title=${toSearch}`)
+      const { success, response } = searchMemoryRes;
+      let parsedData = [];
+      if (success) {
+        parsedData = parseMemory(response);
+      }
+      return parsedData;
+    },
+    [get]
+  );
+
   return (
-    <ApiContext.Provider value={{ signUp, signIn, addMemory, getMemory }}>
+    <ApiContext.Provider
+      value={{ signUp, signIn, addMemory, getMemory, searchMemory }}
+    >
       {children}
     </ApiContext.Provider>
   );
