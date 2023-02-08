@@ -20,9 +20,9 @@ function BottomTabStack() {
         options={{
           title: "My home",
           headerStyle: {
-            backgroundColor: headerColor
+            backgroundColor: headerColor,
           },
-          headerTintColor: "#fff",
+          headerTintColor: Colors.white,
           tabBarActiveTintColor: Colors.dark,
           tabBarIcon: () => (
             <Ionicons name="home" color={Colors.dark} size={25} />
@@ -37,7 +37,7 @@ function BottomTabStack() {
           headerStyle: {
             backgroundColor: headerColor,
           },
-          headerTintColor: "#fff",
+          headerTintColor: Colors.white,
           tabBarActiveTintColor: Colors.dark,
           tabBarIcon: () => (
             <Ionicons name="heart" color={Colors.dark} size={25} />
@@ -53,7 +53,7 @@ function BottomTabStack() {
             backgroundColor: headerColor,
           },
           tabBarHideOnKeyboard: true,
-          headerTintColor: "#fff",
+          headerTintColor: Colors.white,
           tabBarActiveTintColor: Colors.dark,
           tabBarIcon: () => (
             <Ionicons name="add-circle" color={Colors.dark} size={25} />
@@ -68,7 +68,7 @@ function BottomTabStack() {
           headerStyle: {
             backgroundColor: headerColor,
           },
-          headerTintColor: "#fff",
+          headerTintColor: Colors.white,
           tabBarActiveTintColor: Colors.dark,
           tabBarHideOnKeyboard: true,
           tabBarIcon: () => (
@@ -84,7 +84,7 @@ function BottomTabStack() {
           headerStyle: {
             backgroundColor: headerColor,
           },
-          headerTintColor: "#fff",
+          headerTintColor: Colors.white,
           tabBarActiveTintColor: Colors.dark,
           tabBarIcon: () => (
             <Ionicons name="person" color={Colors.dark} size={25} />

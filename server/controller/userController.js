@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
-JWTKEY = process.env.JWTKEY
+const JWTKEY = process.env.JWTKEY
 
 exports.registerUser = async (req, res) => {
     try {

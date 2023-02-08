@@ -1,7 +1,6 @@
-import React, { useContext } from "react";
-import { StyleSheet, RefreshControl, ScrollView } from "react-native";
-import CustomCard from "../../components/CustomCard";
-import CustomStatusBar from "../../components/CustomStatusBar";
+import React, { useContext, useEffect } from "react";
+import { StyleSheet, RefreshControl } from "react-native";
+import MemoryList from "../../components/MemoryList";
 import { ApiContext } from "../../context/ApiContext";
 import { MemoryContext } from "../../context/MemoryContext";
 
@@ -18,27 +17,12 @@ const HomeScreen = ({ style }) => {
   };
 
   return (
-    <ScrollView
-      style={style}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      <CustomStatusBar />
-      {allMemories &&
-        allMemories instanceof Array &&
-        allMemories.length > 0 &&
-        allMemories?.map((eachMemory, i) => {
-          return (
-            <CustomCard
-              key={i}
-              title={eachMemory.title}
-              description={eachMemory.description}
-              style={styles.cardStyle}
-            />
-          );
-        })}
-    </ScrollView>
+    <MemoryList
+      memoryToDisplay={allMemories}
+      refreshing={refreshing}
+      refreshFunction={onRefresh}
+      containerStyle={style}
+    />
   );
 };
 
@@ -47,9 +31,6 @@ const styles = StyleSheet.create({
     width: "90%",
     alignSelf: "center",
     marginBottom: 20,
-  },
-  cardStyle: {
-    marginVertical: 10,
   },
 });
 
