@@ -2,8 +2,11 @@ import React, { useCallback, createContext, useContext } from "react";
 import axios from "axios";
 import { UserContext } from "./UserContext";
 import { MemoryContext } from "./MemoryContext";
-import config from "../config";
-import { parseMemory } from "../utils/dataparser";
+import {
+  parseMemory,
+  parseUser,
+  parseFavouriteMemory,
+} from "../utils/dataparser";
 
 export const ApiContext = createContext();
 
@@ -11,8 +14,8 @@ const ApiContextProvider = ({ children }) => {
   const { setUserContext, userContext } = useContext(UserContext);
   const { setMemoryContext } = useContext(MemoryContext);
   //   const url = config.URL;
-  const url = "http://1ead-59-95-86-160.ngrok.io";
-  const token = userContext.token;
+  const url = "http://8db4-117-223-5-28.ngrok.io";
+  const token = userContext?.userData?.token;
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   console.log(`JWT ${token}`);
@@ -23,11 +26,12 @@ const ApiContextProvider = ({ children }) => {
         return { success: true, errorMsg: "", response: res.data };
       })
       .catch((err) => {
-        console.log(`${url}/${endpoint} err`, err);
+        console.log(`GET: ${url}/${endpoint} err`, err);
         return { success: false, errorMsg: err.message, response: {} };
       })
       .finally(() => console.log("finally"));
   });
+
   const post = useCallback(async (endpoint, data) => {
     return axios
       .post(`${url}/${endpoint}`, data)
@@ -35,7 +39,20 @@ const ApiContextProvider = ({ children }) => {
         return { success: true, errorMsg: "", response: res.data };
       })
       .catch((err) => {
-        console.log(`${url}/${endpoint} err`, err);
+        console.log(`POST: ${url}/${endpoint} err`, err);
+        return { success: false, errorMsg: err.message, response: {} };
+      })
+      .finally(() => console.log("finally"));
+  });
+
+  const put = useCallback(async (endpoint, data) => {
+    return axios
+      .put(`${url}/${endpoint}`, data)
+      .then((res) => {
+        return { success: true, errorMsg: "", response: res.data };
+      })
+      .catch((err) => {
+        console.log(`PUT: ${url}/${endpoint} err`, err);
         return { success: false, errorMsg: err.message, response: {} };
       })
       .finally(() => console.log("finally"));
@@ -59,9 +76,13 @@ const ApiContextProvider = ({ children }) => {
   const signIn = useCallback(
     async (data) => {
       const response = await post("api/signin", data);
+      const parsedData = parseUser(response);
+
       if (response.success) {
-        setUserContext({ token: response.response.token });
-        console.log("JWT ", response.response.token);
+        setUserContext({
+          userData: parsedData.response,
+        });
+        console.log("JWT ", parsedData);
       }
       await getMemory();
       return response;
@@ -79,15 +100,40 @@ const ApiContextProvider = ({ children }) => {
     [post, getMemory]
   );
 
+  // ADDING MEMORY TO FAVORITES
+  const addFavouriteMemory = useCallback(
+    async (userId, data) => {
+      console.log("🚀 ~ file: ApiContext.js:87 ~ userId:", userId);
+      const response = await put(`api/favorite/${userId}`, data);
+      await getMemory();
+      return response;
+    },
+    [put, getMemory]
+  );
+
   // GET
 
   // GET MEMORY
   const getMemory = useCallback(async () => {
     const memoryRes = await get("api/memory");
     const { success, response } = memoryRes;
-
+    const parsedMemory = parseMemory(
+      response,
+      userContext?.userData?.favourites
+    );
+    const parsedFavouriteMemory = parseFavouriteMemory(
+      userContext?.userData?.favourites,
+      parsedMemory?.memories
+    );
+    console.log(
+      "🚀 ~ file: ApiContext.js:124 ~ getMemory ~ parsedMemory:",
+      parsedFavouriteMemory.response
+    );
     if (success) {
-      setMemoryContext({ memories: parseMemory(response) });
+      setMemoryContext({
+        memories: parsedMemory?.memories,
+        faouriteMemories: parsedFavouriteMemory?.response,
+      });
     } else {
       setMemoryContext({ memories: [] });
     }
@@ -97,7 +143,7 @@ const ApiContextProvider = ({ children }) => {
   const searchMemory = useCallback(
     async (toSearch) => {
       const searchMemoryRes = await get(`api/search?title=${toSearch}`);
-      console.log(`api/search/memory?title=${toSearch}`)
+      console.log(`api/search/memory?title=${toSearch}`);
       const { success, response } = searchMemoryRes;
       let parsedData = [];
       if (success) {
@@ -110,7 +156,14 @@ const ApiContextProvider = ({ children }) => {
 
   return (
     <ApiContext.Provider
-      value={{ signUp, signIn, addMemory, getMemory, searchMemory }}
+      value={{
+        signUp,
+        signIn,
+        addMemory,
+        getMemory,
+        searchMemory,
+        addFavouriteMemory,
+      }}
     >
       {children}
     </ApiContext.Provider>

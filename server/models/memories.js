@@ -1,22 +1,25 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const memorySchema = new Schema({
+const memorySchema = new Schema(
+  {
     title: {
-        type: String,
-        maxlength: 50,
-        required: true
+      type: String,
+      maxlength: 50,
+      required: true,
     },
     description: {
-        type: String
+      type: String,
     },
-    photo:{
-        type: String
+    photo: {
+      type: String,
     },
     date: {
-        type: Date
-    }
-})
+      type: Date,
+    },
+  },
+  { timestamps: true }
+);
 
-const Memory = mongoose.model('memory',memorySchema);
+const Memory = mongoose.model("memory", memorySchema);
 module.exports = Memory;

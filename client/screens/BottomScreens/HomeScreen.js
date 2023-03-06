@@ -1,8 +1,9 @@
-import React, { useContext, useEffect } from "react";
-import { StyleSheet, RefreshControl } from "react-native";
+import React, { useContext } from "react";
+import { StyleSheet, Button } from "react-native";
 import MemoryList from "../../components/MemoryList";
 import { ApiContext } from "../../context/ApiContext";
 import { MemoryContext } from "../../context/MemoryContext";
+import CustomStatusBar from "../../components/CustomStatusBar";
 
 const HomeScreen = ({ style }) => {
   const { getMemory } = useContext(ApiContext);
@@ -17,12 +18,15 @@ const HomeScreen = ({ style }) => {
   };
 
   return (
-    <MemoryList
-      memoryToDisplay={allMemories}
-      refreshing={refreshing}
-      refreshFunction={onRefresh}
-      containerStyle={style}
-    />
+    <>
+      <CustomStatusBar />
+      <MemoryList
+        memoryToDisplay={allMemories}
+        refreshing={refreshing}
+        refreshFunction={onRefresh}
+        containerStyle={style}
+      />
+    </>
   );
 };
 

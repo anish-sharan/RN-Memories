@@ -1,6 +1,8 @@
-import { StyleSheet, ScrollView, RefreshControl } from "react-native";
-import React from "react";
+import { StyleSheet, ScrollView, RefreshControl, Alert } from "react-native";
+import React, { useContext } from "react";
 import CustomCard from "./CustomCard";
+import { ApiContext } from "../context/ApiContext";
+import { UserContext } from "../context/UserContext";
 
 const MemoryList = ({
   containerStyle,
@@ -9,6 +11,22 @@ const MemoryList = ({
   refreshFunction,
   addRefreshControl = true,
 }) => {
+  const { addFavouriteMemory } = useContext(ApiContext);
+  const { userContext } = useContext(UserContext);
+
+  const favouriteHandler = async (selectedMemory) => {
+    const dataToSend = {
+      id: selectedMemory._id,
+    };
+    const { success } = await addFavouriteMemory(
+      userContext?.userData?.userId,
+      dataToSend
+    );
+    if (!success) {
+      Alert.alert("Something went wrong");
+    }
+  };
+
   return (
     <ScrollView
       style={containerStyle}
@@ -33,6 +51,10 @@ const MemoryList = ({
               title={eachMemory.title}
               description={eachMemory.description}
               style={styles.cardStyle}
+              onPressFavourite={(maddFavouriteMemory) =>
+                favouriteHandler(eachMemory)
+              }
+              isLiked={eachMemory.isLiked}
             />
           );
         })}
