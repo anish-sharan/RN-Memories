@@ -19,7 +19,6 @@ const MemoryList = ({
     const dataToSend = {
       id: selectedMemory.id,
     };
-    console.log("#############################\n", memoryToDisplay);
     const { success } = await addFavouriteMemory(
       userContext?.userData?.userId,
       dataToSend

@@ -103,6 +103,7 @@ const ApiContextProvider = ({ children }) => {
     async (userId, data) => {
       console.log("🚀 ~ file: ApiContext.js:87 ~ userId:", userId);
       const response = await put(`api/favorite/${userId}`, data);
+      await getFavouriteMemory(userId);
       await getMemory();
       return response;
     },
@@ -119,10 +120,7 @@ const ApiContextProvider = ({ children }) => {
       response,
       userContext?.userData?.favourites
     );
-    const parsedFavouriteMemory = parseFavouriteMemory(
-      userContext?.userData?.favourites,
-      parsedMemory?.memories
-    );
+
     if (success) {
       setMemoryContext({
         memories: parsedMemory?.memories,
@@ -147,7 +145,7 @@ const ApiContextProvider = ({ children }) => {
     [get]
   );
 
-  // GET FOUORITE MEMORY
+  // GET FAVOURITE MEMORY
   const getFavouriteMemory = useCallback(
     async (userId) => {
       const favouriteMemoryRes = await get(`api/favourite/${userId}`);
