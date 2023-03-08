@@ -14,7 +14,7 @@ const ApiContextProvider = ({ children }) => {
   const { setUserContext, userContext } = useContext(UserContext);
   const { setMemoryContext } = useContext(MemoryContext);
   //   const url = config.URL;
-  const url = "http://8db4-117-223-5-28.ngrok.io";
+  const url = "http://b701-59-95-84-213.ngrok.io";
   const token = userContext?.userData?.token;
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
@@ -77,14 +77,12 @@ const ApiContextProvider = ({ children }) => {
     async (data) => {
       const response = await post("api/signin", data);
       const parsedData = parseUser(response);
-
       if (response.success) {
         setUserContext({
           userData: parsedData.response,
         });
         console.log("JWT ", parsedData);
       }
-      await getMemory();
       return response;
     },
     [post]
@@ -125,14 +123,9 @@ const ApiContextProvider = ({ children }) => {
       userContext?.userData?.favourites,
       parsedMemory?.memories
     );
-    console.log(
-      "🚀 ~ file: ApiContext.js:124 ~ getMemory ~ parsedMemory:",
-      parsedFavouriteMemory.response
-    );
     if (success) {
       setMemoryContext({
         memories: parsedMemory?.memories,
-        faouriteMemories: parsedFavouriteMemory?.response,
       });
     } else {
       setMemoryContext({ memories: [] });
@@ -154,6 +147,22 @@ const ApiContextProvider = ({ children }) => {
     [get]
   );
 
+  // GET FOUORITE MEMORY
+  const getFavouriteMemory = useCallback(
+    async (userId) => {
+      const favouriteMemoryRes = await get(`api/favourite/${userId}`);
+      const { success, response } = favouriteMemoryRes;
+      let parsedData = [];
+      if (success) {
+        parsedData = parseFavouriteMemory(response);
+        console.log("🚀 ~ file: ApiContext.js:165 ~ parsedData:", parsedData);
+        setMemoryContext({ faouriteMemories: parsedData?.favourites });
+      }
+      return parsedData;
+    },
+    [get]
+  );
+
   return (
     <ApiContext.Provider
       value={{
@@ -163,6 +172,7 @@ const ApiContextProvider = ({ children }) => {
         getMemory,
         searchMemory,
         addFavouriteMemory,
+        getFavouriteMemory,
       }}
     >
       {children}

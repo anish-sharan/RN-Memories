@@ -3,6 +3,7 @@ import React, { useContext } from "react";
 import CustomCard from "./CustomCard";
 import { ApiContext } from "../context/ApiContext";
 import { UserContext } from "../context/UserContext";
+import { showToast } from "./../utils/toastUtils";
 
 const MemoryList = ({
   containerStyle,
@@ -16,14 +17,17 @@ const MemoryList = ({
 
   const favouriteHandler = async (selectedMemory) => {
     const dataToSend = {
-      id: selectedMemory._id,
+      id: selectedMemory.id,
     };
+    console.log("#############################\n", memoryToDisplay);
     const { success } = await addFavouriteMemory(
       userContext?.userData?.userId,
       dataToSend
     );
     if (!success) {
       Alert.alert("Something went wrong");
+    } else {
+      showToast({ heading: "Favourite Added", time: 3000 });
     }
   };
 
@@ -45,16 +49,16 @@ const MemoryList = ({
         memoryToDisplay instanceof Array &&
         memoryToDisplay.length > 0 &&
         memoryToDisplay?.map((eachMemory, i) => {
+          console.log(eachMemory.title, " -- ", eachMemory.isLiked);
+
           return (
             <CustomCard
               key={i}
-              title={eachMemory.title}
-              description={eachMemory.description}
+              title={eachMemory?.title || "N/A"}
+              description={eachMemory?.description || "N/A"}
               style={styles.cardStyle}
-              onPressFavourite={(maddFavouriteMemory) =>
-                favouriteHandler(eachMemory)
-              }
-              isLiked={eachMemory.isLiked}
+              onPressFavourite={() => favouriteHandler(eachMemory)}
+              isLiked={eachMemory?.isLiked}
             />
           );
         })}

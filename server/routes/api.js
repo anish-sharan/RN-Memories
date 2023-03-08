@@ -7,7 +7,7 @@ const {
   getMemory,
   searchMemory,
   addFavouriteMemory,
-  getUser,
+  getFavouriteMemory,
 } = require("../controller/memoryController");
 const auth = require("../middleware/auth");
 
@@ -20,5 +20,6 @@ router.get("/memory", auth, getMemory);
 router.get("/search", auth, searchMemory);
 
 router.put("/favorite/:userId", auth, addFavouriteMemory);
+router.get("/favourite/:userId", auth, getFavouriteMemory);
 
 module.exports = router;

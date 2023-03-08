@@ -1,18 +1,16 @@
 export const parseMemory = (data, favourites) => {
   if (!data) {
-    return data;
+    return [];
   }
-  if (data && data.length > 0 && favourites) {
-    const userData = data;
-    console.log("🚀 ~ file: dataparser.js:7 ~ parseMemory ~ data:", data);
 
-    const allMemories = userData?.map((item) => {
+  if (data && data.length > 0) {
+    const allMemories = data?.map((item) => {
       return {
         id: item._id,
         title: item.title || "N/A",
         description: item.description || "N/A",
         updatedOn: item.date || "N/A",
-        isLiked: favourites?.some((eachItem) => eachItem.id == item._id),
+        isLiked: favourites?.some((eachItem) => eachItem == item._id),
       };
     });
     return {
@@ -26,7 +24,7 @@ export const parseUser = (data) => {
     return data;
   }
 
-  if (data && data.response) {
+  if (data && data?.response) {
     const userData = data?.response?.user;
     const parsedData = {
       token: data?.response?.token || "N/A",
@@ -42,16 +40,23 @@ export const parseUser = (data) => {
   }
 };
 
-export const parseFavouriteMemory = (data, allMemories) => {
-  const parsedData = [];
-  if (data && data.length > 0 && allMemories && allMemories.length > 0) {
-    data.map((eachItem) => {
-      const foundMemory = allMemories?.find(
-        (eachMemory) => eachMemory?.id == eachItem?.id
-      );
-      parsedData.push(foundMemory);
-    });
+export const parseFavouriteMemory = (data) => {
+  if (!data) {
+    return data;
   }
 
-  return { response: parsedData };
+  if (data && data?.data?.length > 0) {
+    const userData = data?.data;
+    const allFavouriteMemories = userData?.map((item) => {
+      return {
+        id: item._id,
+        title: item.title || "N/A",
+        description: item.description || "N/A",
+        updatedOn: item.date || "N/A",
+      };
+    });
+    return {
+      favourites: allFavouriteMemories,
+    };
+  }
 };

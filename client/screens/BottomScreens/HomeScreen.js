@@ -1,15 +1,28 @@
-import React, { useContext } from "react";
-import { StyleSheet, Button } from "react-native";
+import React, { useContext, useEffect } from "react";
+import { StyleSheet } from "react-native";
 import MemoryList from "../../components/MemoryList";
 import { ApiContext } from "../../context/ApiContext";
 import { MemoryContext } from "../../context/MemoryContext";
 import CustomStatusBar from "../../components/CustomStatusBar";
+import { useIsFocused } from "@react-navigation/native";
 
 const HomeScreen = ({ style }) => {
   const { getMemory } = useContext(ApiContext);
   const { memoryContext } = useContext(MemoryContext);
   const [refreshing, setRefreshing] = React.useState(false);
   const allMemories = memoryContext?.memories ?? [];
+  const isFocused = useIsFocused();
+
+  const fetchData = async () => {
+    await getMemory();
+  };
+
+  useEffect(() => {
+    if (isFocused && !memoryContext?.memories) {
+      fetchData();
+    }
+  }, [isFocused, memoryContext.memories]);
+ 
 
   const onRefresh = async () => {
     setRefreshing(true);

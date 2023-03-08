@@ -44,38 +44,33 @@ exports.searchMemory = async (req, res) => {
   }
 };
 
-// exports.addFavouriteMemory = async (req, res) => {
-//   try {
-//     const userId = req.params.userId;
-//     const favouriteIdToPush = req.body;
-
-//     User.find({ favorites: { $in: [favouriteIdToPush] } }).toArray(
-//       (err, docs) => {
-//         // Handle the result
-//         if(err){
-//           console.log(err);
-//         }else{
-//           console.log('got it');
-//         }
-//       }
-//     );
-
-//     // User.findOneAndUpdate(
-//     //   { _id: userId },
-//     //   { $push: { favorites: favouriteIdToPush } },
-//     //   { new: true },
-//     //   (err, success) => {
-//     //     if (err) {
-//     //       console.log(err);
-//     //     } else {
-//     //       res.status(200).json({ success: true });
-//     //     }
-//     //   }
-//     // );
-//   } catch (error) {
-//     return res.status(400).json({ success: false, err: error });
-//   }
-// };
+exports.getFavouriteMemory = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    User.findById({ _id: userId }, (err, user) => {
+      if (err) {
+        console.log("ERROR : ", err);
+        return;
+      }
+      if (user) {
+        const favouriteArray = user?.favorites ?? [];
+        if (favouriteArray.length > 0) {
+          Memory.find({ _id: { $in: favouriteArray } }, (err, data) => {
+            if (err) {
+              console.log(err);
+            } else {
+              res.status(200).json({ success: true, data: data });
+            }
+          });
+        } else {
+          res.status(200).json({ success: false });
+        }
+      }
+    });
+  } catch (error) {
+    return res.status(400).json({ success: false, err: error });
+  }
+};
 
 exports.addFavouriteMemory = async (req, res) => {
   try {
@@ -83,7 +78,7 @@ exports.addFavouriteMemory = async (req, res) => {
     const favouriteIdToPush = req.body;
 
     User.findOne(
-      { _id: userId, favorites: { $elemMatch: { $eq: favouriteIdToPush } } },
+      { _id: userId, favorites: { $elemMatch: { $eq: favouriteIdToPush.id } } },
       (err, favorite) => {
         if (err) {
           console.log("An error occurred:", err);
@@ -93,7 +88,7 @@ exports.addFavouriteMemory = async (req, res) => {
         if (!favorite) {
           User.findOneAndUpdate(
             { _id: userId },
-            { $push: { favorites: favouriteIdToPush } },
+            { $push: { favorites: favouriteIdToPush.id } },
             { new: true },
             (err, success) => {
               if (err) {
