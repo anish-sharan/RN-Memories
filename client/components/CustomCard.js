@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Card, Text } from "react-native-paper";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Colors from "../assets/Colors";
@@ -22,23 +22,21 @@ const CustomCard = ({
           </Card.Content>
           <Card.Actions style={{ width: "20%" }}>
             {isLiked ? (
-              <Ionicons
-                name="heart"
-                color={Colors.dark}
-                size={25}
+              <TouchableOpacity
                 onPress={() => {
                   onPressFavourite && onPressFavourite();
                 }}
-              />
+              >
+                <Ionicons name="heart" color={Colors.dark} size={25} />
+              </TouchableOpacity>
             ) : (
-              <Ionicons
-                name="heart-outline"
-                color={Colors.dark}
-                size={25}
+              <TouchableOpacity
                 onPress={() => {
                   onPressFavourite && onPressFavourite();
                 }}
-              />
+              >
+                <Ionicons name="heart-outline" color={Colors.dark} size={25} />
+              </TouchableOpacity>
             )}
           </Card.Actions>
         </View>

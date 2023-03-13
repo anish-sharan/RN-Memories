@@ -14,7 +14,7 @@ const ApiContextProvider = ({ children }) => {
   const { setUserContext, userContext } = useContext(UserContext);
   const { setMemoryContext } = useContext(MemoryContext);
   //   const url = config.URL;
-  const url = "http://b701-59-95-84-213.ngrok.io";
+  const url = "http://5fa2-59-95-89-27.ngrok.io";
   const token = userContext?.userData?.token;
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
@@ -103,7 +103,6 @@ const ApiContextProvider = ({ children }) => {
     async (userId, data) => {
       console.log("🚀 ~ file: ApiContext.js:87 ~ userId:", userId);
       const response = await put(`api/favorite/${userId}`, data);
-      await getFavouriteMemory(userId);
       await getMemory();
       return response;
     },
@@ -115,6 +114,7 @@ const ApiContextProvider = ({ children }) => {
   // GET MEMORY
   const getMemory = useCallback(async () => {
     const memoryRes = await get("api/memory");
+    await getFavouriteMemory(userContext?.userData?.userId);
     const { success, response } = memoryRes;
     const parsedMemory = parseMemory(
       response,

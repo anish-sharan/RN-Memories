@@ -48,8 +48,6 @@ const MemoryList = ({
         memoryToDisplay instanceof Array &&
         memoryToDisplay.length > 0 &&
         memoryToDisplay?.map((eachMemory, i) => {
-          console.log(eachMemory.title, " -- ", eachMemory.isLiked);
-
           return (
             <CustomCard
               key={i}
