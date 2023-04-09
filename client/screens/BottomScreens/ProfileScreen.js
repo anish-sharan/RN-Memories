@@ -1,13 +1,13 @@
 import React, { useContext } from "react";
 import { View, StyleSheet, Text } from "react-native";
-import FontSize from "../../assets/FontSize";
-import { FontAwesome, Entypo, AntDesign } from "@expo/vector-icons";
+import { FontAwesome, AntDesign } from "@expo/vector-icons";
 import { UserContext } from "../../context/UserContext";
 import { Card } from "react-native-paper";
 
 const ProfileScreen = () => {
   const { userContext } = useContext(UserContext);
-  console.log("-------------------\n", userContext);
+  const { firstName, email } = userContext?.userData;
+
   return (
     <>
       <Card style={styles.cardContainer}>
@@ -20,7 +20,7 @@ const ProfileScreen = () => {
         />
         <View style={[styles.rowStyle, { marginTop: "20%" }]}>
           <Text style={styles.textInsideCard}>Name</Text>
-          <Text style={styles.textStyle}>Naam naam</Text>
+          <Text style={styles.textStyle}>{firstName || "N/A"}</Text>
         </View>
         <View style={styles.rowStyle}>
           <AntDesign
@@ -29,7 +29,7 @@ const ProfileScreen = () => {
             color="black"
             style={styles.iconStyle}
           />
-          <Text style={styles.textStyle}>hello@email.com</Text>
+          <Text style={styles.textStyle}>{email || "N/A"}</Text>
         </View>
         <View style={styles.rowStyle}>
           <AntDesign

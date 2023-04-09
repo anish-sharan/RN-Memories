@@ -8,6 +8,7 @@ function AppNavigator() {
   const { userContext } = useContext(UserContext);
 
   const getCorrectStack = () => {
+    // if (userContext?.userData?.token || userContext?.token) {
     if (userContext?.userData?.token) {
       return <UserStack />;
     } else {

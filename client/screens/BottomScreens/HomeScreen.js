@@ -22,7 +22,6 @@ const HomeScreen = ({ style }) => {
       fetchData();
     }
   }, [isFocused, memoryContext.memories]);
- 
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -38,6 +37,7 @@ const HomeScreen = ({ style }) => {
         refreshing={refreshing}
         refreshFunction={onRefresh}
         containerStyle={style}
+        isHomeScreen={true}
       />
     </>
   );

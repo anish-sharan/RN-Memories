@@ -11,6 +11,7 @@ const MemoryList = ({
   refresh,
   refreshFunction,
   addRefreshControl = true,
+  isHomeScreen = false,
 }) => {
   const { addFavouriteMemory } = useContext(ApiContext);
   const { userContext } = useContext(UserContext);
@@ -56,6 +57,8 @@ const MemoryList = ({
               style={styles.cardStyle}
               onPressFavourite={() => favouriteHandler(eachMemory)}
               isLiked={eachMemory?.isLiked}
+              isHomeScreen={isHomeScreen}
+              imageUrl={eachMemory.imageUrl}
             />
           );
         })}

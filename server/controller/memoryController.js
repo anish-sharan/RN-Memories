@@ -1,5 +1,6 @@
 const Memory = require("../models/memories");
 const User = require("../models/user");
+require("dotenv").config();
 
 exports.addMemory = async (req, res) => {
   try {

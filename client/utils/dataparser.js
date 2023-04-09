@@ -11,6 +11,7 @@ export const parseMemory = (data, favourites) => {
         description: item.description || "N/A",
         updatedOn: item.date || "N/A",
         isLiked: favourites?.some((eachItem) => eachItem == item._id),
+        imageUrl: item.imageUrl || "https://picsum.photos/800",
       };
     });
     return {

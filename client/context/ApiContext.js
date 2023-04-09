@@ -13,9 +13,14 @@ export const ApiContext = createContext();
 const ApiContextProvider = ({ children }) => {
   const { setUserContext, userContext } = useContext(UserContext);
   const { setMemoryContext } = useContext(MemoryContext);
-  //   const url = config.URL;
-  const url = "http://5fa2-59-95-89-27.ngrok.io";
+  const url = process.env.URL;
+  const customUrl = `https://api.cloudinary.com/v1_1/${process.env.CLOUD_NAME}/image/upload`;
+
   const token = userContext?.userData?.token;
+  console.log(
+    "🚀 ~ file: ApiContext.js:19 ~ ApiContextProvider ~ token:",
+    token
+  );
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   console.log(`JWT ${token}`);
@@ -29,7 +34,7 @@ const ApiContextProvider = ({ children }) => {
         console.log(`GET: ${url}/${endpoint} err`, err);
         return { success: false, errorMsg: err.message, response: {} };
       })
-      .finally(() => console.log("finally"));
+      .finally(() => console.log("finally GET"));
   });
 
   const post = useCallback(async (endpoint, data) => {
@@ -42,7 +47,7 @@ const ApiContextProvider = ({ children }) => {
         console.log(`POST: ${url}/${endpoint} err`, err);
         return { success: false, errorMsg: err.message, response: {} };
       })
-      .finally(() => console.log("finally"));
+      .finally(() => console.log("finally Post"));
   });
 
   const put = useCallback(async (endpoint, data) => {
@@ -54,19 +59,41 @@ const ApiContextProvider = ({ children }) => {
       .catch((err) => {
         console.log(`PUT: ${url}/${endpoint} err`, err);
         return { success: false, errorMsg: err.message, response: {} };
-      })
-      .finally(() => console.log("finally"));
+      });
+    // .finally(() => console.log("finally Put"));
+  });
+
+  const customPost = useCallback(async (endpoint, data) => {
+    try {
+      const response = await fetch(endpoint, {
+        body: JSON.stringify(data),
+        headers: {
+          "content-type": "application/json",
+        },
+        method: "POST",
+      });
+      const json = await response.json();
+      return { response: json, success: true };
+    } catch (error) {
+      console.error("err", error);
+    }
   });
 
   // POST
 
-  // SIGNING USER
-  const signUp = useCallback(
+  // VERIFY OTP
+  const verifyOtp = useCallback(
+    async (data, otp) => {
+      const response = await post(`api/verify/otp/${otp}`, data);
+      return response.response;
+    },
+    [post]
+  );
+
+  // VRERIFY EMAIL
+  const verifyEmail = useCallback(
     async (data) => {
-      const response = await post("api/signup", data);
-      if (response.success) {
-        setUserContext({ token: response.response.token });
-      }
+      const response = await post("api/verify/email", data);
       return response;
     },
     [post]
@@ -82,13 +109,15 @@ const ApiContextProvider = ({ children }) => {
           userData: parsedData.response,
         });
         console.log("JWT ", parsedData);
+      } else {
+        setUserContext({});
       }
       return response;
     },
     [post]
   );
 
-  // ADDING MEMORY
+  // ADDING MEMORY Data
   const addMemory = useCallback(
     async (data) => {
       const response = await post("api/memory", data);
@@ -96,6 +125,20 @@ const ApiContextProvider = ({ children }) => {
       return response;
     },
     [post, getMemory]
+  );
+
+  // UPLOADING IMAGE And Memory TO DB
+  const uploadImageToDb = useCallback(
+    async (imageData, userId, memoryData) => {
+      const res = await customPost(customUrl, imageData);
+      if (res?.success) {
+        console.log(res?.response?.url);
+        memoryData.imageUrl = res?.response?.url;
+        const addMemoryRes = await addMemory(memoryData);
+        return addMemoryRes;
+      }
+    },
+    [post]
   );
 
   // ADDING MEMORY TO FAVORITES
@@ -116,6 +159,10 @@ const ApiContextProvider = ({ children }) => {
     const memoryRes = await get("api/memory");
     await getFavouriteMemory(userContext?.userData?.userId);
     const { success, response } = memoryRes;
+    console.log(
+      "🚀 ~ file: ApiContext.js:130 ~ getMemory ~ memoryRes:",
+      memoryRes
+    );
     const parsedMemory = parseMemory(
       response,
       userContext?.userData?.favourites
@@ -138,7 +185,7 @@ const ApiContextProvider = ({ children }) => {
       const { success, response } = searchMemoryRes;
       let parsedData = [];
       if (success) {
-        parsedData = parseMemory(response);
+        parsedData = parseMemory(response.data);
       }
       return parsedData;
     },
@@ -164,13 +211,15 @@ const ApiContextProvider = ({ children }) => {
   return (
     <ApiContext.Provider
       value={{
-        signUp,
         signIn,
         addMemory,
         getMemory,
         searchMemory,
         addFavouriteMemory,
         getFavouriteMemory,
+        uploadImageToDb,
+        verifyOtp,
+        verifyEmail,
       }}
     >
       {children}

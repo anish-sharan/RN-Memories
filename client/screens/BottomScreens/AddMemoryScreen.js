@@ -1,19 +1,20 @@
 import React, { useState, useCallback, useContext } from "react";
-import { Keyboard, StyleSheet, Alert } from "react-native";
+import { Keyboard, StyleSheet, Alert, Image } from "react-native";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
 import UploadImageComponent from "../../components/UploadImageComponent";
 import { ApiContext } from "../../context/ApiContext";
-import { showToast } from "../../utils/toastUtils";
+import { UserContext } from "../../context/UserContext";
 
 const AddMemoryScreen = () => {
-  const { addMemory } = useContext(ApiContext);
+  const { uploadImageToDb } = useContext(ApiContext);
+  const { userContext } = useContext(UserContext);
 
+  const userID = userContext?.userData?.userId;
+  const [image, setImage] = useState(null);
   const [memoryData, setMemoryData] = useState({
     title: "",
     description: "",
-    photo: "",
-    date: "",
   });
   const [memoryDataError, setmemoryDataError] = useState({
     title: "",
@@ -40,11 +41,17 @@ const AddMemoryScreen = () => {
     }
 
     if (validInput) {
-      let saveTimeAndDate = new Date();
-      memoryData.date = saveTimeAndDate.toString();
-      const response = await addMemory(memoryData);
-      if (response.success) {
-        Alert.alert("Data added successfully");
+      const imageToSend = {
+        file: `data:image/png;base64,${image.base64}`,
+        upload_preset: process.env.UPLOAD_PRESET,
+      };
+      const dataToSend = {
+        title: memoryData?.title,
+        description: memoryData?.description,
+      };
+      const res = await uploadImageToDb(imageToSend, userID, dataToSend);
+      if (res?.success) {
+        Alert.alert("Memory add successfully");
       } else {
         Alert.alert("Something went wrong");
       }
@@ -53,7 +60,11 @@ const AddMemoryScreen = () => {
 
   return (
     <>
-      <UploadImageComponent />
+      <UploadImageComponent
+        style={{ marginVertical: "8%" }}
+        image={image}
+        setImage={setImage}
+      />
       <CustomInput
         placeholder="Title"
         onChangeText={(val) => handleChange("title", val)}
@@ -66,7 +77,6 @@ const AddMemoryScreen = () => {
         multiline={true}
         onChangeText={(val) => handleChange("description", val)}
         onFocus={() => errorHandler("description", null)}
-        multiline={true}
         style={styles.input}
         errorMessage={memoryDataError.description}
       />
@@ -83,6 +93,7 @@ const styles = StyleSheet.create({
   input: {
     width: "90%",
     alignSelf: "center",
+    marginTop: "2%",
   },
 });
 export default AddMemoryScreen;

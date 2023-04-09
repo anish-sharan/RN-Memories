@@ -32,7 +32,6 @@ const FavouriteScreen = () => {
 
   return (
     <>
-      <Text style={styles.container}>FAV</Text>
       <MemoryList
         memoryToDisplay={memoryContext?.faouriteMemories ?? []}
         refreshing={refreshing}

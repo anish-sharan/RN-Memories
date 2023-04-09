@@ -8,7 +8,7 @@ export default function LoginScreen({ navigation }) {
     const { signIn } = useContext(ApiContext);
 
     const [userData, setUserData] = useState({
-        email: 'anish@mail.com',
+        email: 'a@mail.com',
         password: '123456'
     });
     const [error, setError] = useState({

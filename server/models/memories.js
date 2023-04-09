@@ -11,11 +11,8 @@ const memorySchema = new Schema(
     description: {
       type: String,
     },
-    photo: {
+    imageUrl: {
       type: String,
-    },
-    date: {
-      type: Date,
     },
   },
   { timestamps: true }

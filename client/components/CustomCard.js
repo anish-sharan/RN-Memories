@@ -11,34 +11,41 @@ const CustomCard = ({
   onPressFavourite,
   isLiked = false,
   isHomeScreen = false,
+  imageUrl,
 }) => {
   return (
     <View style={[styles.container, style]}>
       <Card>
-        <Card.Cover source={{ uri: "https://picsum.photos/700" }} />
+        <Card.Cover source={{ uri: imageUrl }} />
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Card.Content>
             <Text variant="titleLarge">{title}</Text>
           </Card.Content>
-          <Card.Actions style={{ width: "20%" }}>
-            {isLiked ? (
-              <TouchableOpacity
-                onPress={() => {
-                  onPressFavourite && onPressFavourite();
-                }}
-              >
-                <Ionicons name="heart" color={Colors.dark} size={25} />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={() => {
-                  onPressFavourite && onPressFavourite();
-                }}
-              >
-                <Ionicons name="heart-outline" color={Colors.dark} size={25} />
-              </TouchableOpacity>
-            )}
-          </Card.Actions>
+          {isHomeScreen && (
+            <Card.Actions style={{ width: "20%" }}>
+              {isLiked ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    onPressFavourite && onPressFavourite();
+                  }}
+                >
+                  <Ionicons name="heart" color={Colors.dark} size={25} />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => {
+                    onPressFavourite && onPressFavourite();
+                  }}
+                >
+                  <Ionicons
+                    name="heart-outline"
+                    color={Colors.dark}
+                    size={25}
+                  />
+                </TouchableOpacity>
+              )}
+            </Card.Actions>
+          )}
         </View>
         <Card.Content>
           <Text variant="titleMedium">{description}</Text>
