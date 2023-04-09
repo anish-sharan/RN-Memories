@@ -1,16 +1,54 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import { Avatar, Card, Text } from "react-native-paper";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { Card, Text } from "react-native-paper";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import Colors from "../assets/Colors";
 
-const LeftContent = (props) => <Avatar.Icon {...props} icon="folder" />;
-const CustomCard = ({ style, title, description }) => {
+const CustomCard = ({
+  style,
+  title,
+  description,
+  onPressFavourite,
+  isLiked = false,
+  isHomeScreen = false,
+  imageUrl,
+}) => {
   return (
     <View style={[styles.container, style]}>
       <Card>
-        <Card.Cover source={{ uri: "https://picsum.photos/700" }} />
+        <Card.Cover source={{ uri: imageUrl }} />
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <Card.Content>
+            <Text variant="titleLarge">{title}</Text>
+          </Card.Content>
+          {isHomeScreen && (
+            <Card.Actions style={{ width: "20%" }}>
+              {isLiked ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    onPressFavourite && onPressFavourite();
+                  }}
+                >
+                  <Ionicons name="heart" color={Colors.dark} size={25} />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => {
+                    onPressFavourite && onPressFavourite();
+                  }}
+                >
+                  <Ionicons
+                    name="heart-outline"
+                    color={Colors.dark}
+                    size={25}
+                  />
+                </TouchableOpacity>
+              )}
+            </Card.Actions>
+          )}
+        </View>
         <Card.Content>
-          <Text variant="titleLarge">{title}</Text>
-          <Text variant="bodyMedium">{description}</Text>
+          <Text variant="titleMedium">{description}</Text>
         </Card.Content>
       </Card>
     </View>

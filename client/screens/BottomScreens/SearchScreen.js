@@ -14,15 +14,8 @@ const SearchScreen = () => {
   const searchHandler = async () => {
     Keyboard.dismiss();
     const response = await searchMemory(searchQuery);
-    if (!response.success) {
-      Alert.alert("Something went wrong");
-    } else {
-      console.log("response from search memory", response);
-      setDataToDisplay(response.data);
-    }
+    setDataToDisplay(response.memories);
   };
-
-  console.log(dataToDisplay);
   return (
     <>
       <View style={styles.searchSection}>

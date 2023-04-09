@@ -1,6 +1,9 @@
-import { StyleSheet, ScrollView, RefreshControl } from "react-native";
-import React from "react";
+import { StyleSheet, ScrollView, RefreshControl, Alert } from "react-native";
+import React, { useContext } from "react";
 import CustomCard from "./CustomCard";
+import { ApiContext } from "../context/ApiContext";
+import { UserContext } from "../context/UserContext";
+import { showToast } from "./../utils/toastUtils";
 
 const MemoryList = ({
   containerStyle,
@@ -8,7 +11,26 @@ const MemoryList = ({
   refresh,
   refreshFunction,
   addRefreshControl = true,
+  isHomeScreen = false,
 }) => {
+  const { addFavouriteMemory } = useContext(ApiContext);
+  const { userContext } = useContext(UserContext);
+
+  const favouriteHandler = async (selectedMemory) => {
+    const dataToSend = {
+      id: selectedMemory.id,
+    };
+    const { success } = await addFavouriteMemory(
+      userContext?.userData?.userId,
+      dataToSend
+    );
+    if (!success) {
+      Alert.alert("Something went wrong");
+    } else {
+      showToast({ heading: "Favourite Added", time: 3000 });
+    }
+  };
+
   return (
     <ScrollView
       style={containerStyle}
@@ -30,9 +52,13 @@ const MemoryList = ({
           return (
             <CustomCard
               key={i}
-              title={eachMemory.title}
-              description={eachMemory.description}
+              title={eachMemory?.title || "N/A"}
+              description={eachMemory?.description || "N/A"}
               style={styles.cardStyle}
+              onPressFavourite={() => favouriteHandler(eachMemory)}
+              isLiked={eachMemory?.isLiked}
+              isHomeScreen={isHomeScreen}
+              imageUrl={eachMemory.imageUrl}
             />
           );
         })}
