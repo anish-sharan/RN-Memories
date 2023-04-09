@@ -8,16 +8,16 @@ A full stack app that has react native front end, nodejs backend and mongodb as 
 
 ## Installation
 
-Install my-project with npm
+Install RN-Memories with npm
 
 ```bash
-  cd my-project
+  cd RN-Memories
   cd client 
   npm install
   expo start
 
   In Another Terminal
-  cd my-project
+  cd RN-Memories
   cd server
   npm install
   node index.js
